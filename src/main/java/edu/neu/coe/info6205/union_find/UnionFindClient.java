@@ -11,6 +11,12 @@ import java.util.concurrent.ThreadLocalRandom;
 public class UnionFindClient {
 
 
+    /**
+     * count and return average number of pairs generated for connected all the edges
+     *
+     * @param n -= no of sites or nodes
+     * @return -= Total no of pairs generated for joining the vertices
+     */
     public static int count(int n) {
         int totalCount = 0;
         for (int i = 0; i < 10; i++) {
@@ -31,8 +37,8 @@ public class UnionFindClient {
 
         StringBuilder outputBuilder = new StringBuilder();
         outputBuilder.append("SL.NO,")
-                .append("No of Sites,")
-                .append("Average Connections")
+                .append("No of Sites(n),")
+                .append("No of Pairs(m)")
                 .append("\n");
 
         int n = 17;
