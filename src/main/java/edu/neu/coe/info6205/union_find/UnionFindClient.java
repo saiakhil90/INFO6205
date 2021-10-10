@@ -56,7 +56,7 @@ public class UnionFindClient {
             String dir = "./AssignmentReports/Assignment-3(WQUPC)";
             File directory = new File(dir);
             if (!directory.exists()) directory.mkdirs();
-            PrintWriter writer = new PrintWriter(String.format("%s/insertion-sort-benchmark.csv", dir));
+            PrintWriter writer = new PrintWriter(String.format("%s/data.csv", dir));
             writer.write(outputBuilder.toString());
             writer.close();
         } catch (FileNotFoundException e) {
