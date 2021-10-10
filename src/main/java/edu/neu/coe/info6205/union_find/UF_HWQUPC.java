@@ -81,10 +81,10 @@ public class UF_HWQUPC implements UF {
     public int find(int p) {
         validate(p);
         int root = p;
+        if (this.pathCompression) this.doPathCompression(p);
         while(root!=this.parent[root]){
             root = this.parent[root];
         }
-        if (this.pathCompression) this.doPathCompression(p);
         return root;
     }
 
@@ -172,12 +172,13 @@ public class UF_HWQUPC implements UF {
 
     private void mergeComponents(int i, int j) {
         if (i==j) return;
-        if (this.height[i] < this.height[j]) {
-            this.height[j] += this.height[i];
-            this.parent[i]=j;
-        } else {
-            this.height[i] += this.height[j];
+        if (this.height[i]>this.height[j]){
             this.parent[j] = i;
+        }else if(this.height[j]>this.height[i]){
+            this.parent[i] = j;
+        }else{
+            this.parent[j] = i;
+            this.height[i]+=1;
         }
     }
 
