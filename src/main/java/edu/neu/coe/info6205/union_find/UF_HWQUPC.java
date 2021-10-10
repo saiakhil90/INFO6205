@@ -173,11 +173,11 @@ public class UF_HWQUPC implements UF {
     private void mergeComponents(int i, int j) {
         if (i==j) return;
         if (this.height[i]>this.height[j]){
-            this.parent[j] = i;
+            this.updateParent(j,i);
         }else if(this.height[j]>this.height[i]){
-            this.parent[i] = j;
+            this.updateParent(i,j);
         }else{
-            this.parent[j] = i;
+            this.updateParent(j,i);
             this.height[i]+=1;
         }
     }
