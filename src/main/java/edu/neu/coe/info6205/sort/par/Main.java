@@ -50,7 +50,7 @@ public class Main {
                 }
 
                 try {
-                    PrintWriter writer = new PrintWriter("./src/main/resources/assignment-reports/Assignment-2(Benchmark)/insertion-sort-benchmark.csv");
+                    PrintWriter writer = new PrintWriter("./AssignmentReports/Assignment-5/data.csv");
                     writer.write(outputBuilder.toString());
                     writer.close();
                 } catch (FileNotFoundException e) {
