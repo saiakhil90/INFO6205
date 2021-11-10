@@ -1,9 +1,7 @@
 package edu.neu.coe.info6205.sort.par;
 
-import java.io.BufferedWriter;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,44 +15,53 @@ import java.util.concurrent.ForkJoinPool;
 public class Main {
 
     public static void main(String[] args) {
+        int size = 500000;
         processArgs(args);
-        System.out.println("Degree of parallelism: " + ForkJoinPool.getCommonPoolParallelism());
-        Random random = new Random();
-        int[] array = new int[2000000];
-        ArrayList<Long> timeList = new ArrayList<>();
-        for (int j = 50; j < 100; j++) {
-            ParSort.cutoff = 10000 * (j + 1);
-            // for (int i = 0; i < array.length; i++) array[i] = random.nextInt(10000000);
-            long time;
-            long startTime = System.currentTimeMillis();
-            for (int t = 0; t < 10; t++) {
-                for (int i = 0; i < array.length; i++) array[i] = random.nextInt(10000000);
-                ParSort.sort(array, 0, array.length);
+
+        while (size <= 2000000) {
+            int thread = 2;
+            while (thread <= 64) {
+                ForkJoinPool forkJoinPool = new ForkJoinPool(thread);
+                System.out.println("parallelism degree =  " + forkJoinPool.getParallelism() + " and  the size is: " + size);
+                Random random = new Random();
+                int[] numArray = new int[size];
+                ArrayList<Long> timeList = new ArrayList<>();
+                for (int j = 0; j < 10; j++) {
+                    ParSort.cutoff = 5000 * (j + 1);
+                    long time;
+                    long startTime = System.currentTimeMillis();
+                    for (int t = 0; t < 10; t++) {
+                        for (int i = 0; i < numArray.length; i++) numArray[i] = random.nextInt(10000000);
+                        ParSort.sort(numArray, 0, numArray.length, forkJoinPool);
+                    }
+                    long endTime = System.currentTimeMillis();
+                    time = (endTime - startTime);
+                    timeList.add(time);
+
+
+                    System.out.println("cutoff：" + (ParSort.cutoff) + "------------------ 10times Time:" + time + "ms");
+
+                }
+
+                int j = 0;
+                StringBuilder outputBuilder = new StringBuilder();
+                for (long i : timeList) {
+                    outputBuilder.append((double) 5000 * (j++ + 1) + "," + (double) i + "\n");
+                }
+
+                try {
+                    PrintWriter writer = new PrintWriter("./src/main/resources/assignment-reports/Assignment-2(Benchmark)/insertion-sort-benchmark.csv");
+                    writer.write(outputBuilder.toString());
+                    writer.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                thread *= 2;
             }
-            long endTime = System.currentTimeMillis();
-            time = (endTime - startTime);
-            timeList.add(time);
 
-
-            System.out.println("cutoff：" + (ParSort.cutoff) + "\t\t10times Time:" + time + "ms");
-
+            size *= 2;
         }
-        try {
-            FileOutputStream fis = new FileOutputStream("./src/result.csv");
-            OutputStreamWriter isr = new OutputStreamWriter(fis);
-            BufferedWriter bw = new BufferedWriter(isr);
-            int j = 0;
-            for (long i : timeList) {
-                String content = (double) 10000 * (j + 1) / 2000000 + "," + (double) i / 10 + "\n";
-                j++;
-                bw.write(content);
-                bw.flush();
-            }
-            bw.close();
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private static void processArgs(String[] args) {
